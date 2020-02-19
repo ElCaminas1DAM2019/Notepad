@@ -104,6 +104,7 @@ public class NewJFrame extends javax.swing.JFrame {
         New.setText("File");
 
         menuItemNew.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.ALT_MASK));
+        menuItemNew.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Files-New-File-icon.png"))); // NOI18N
         menuItemNew.setText("New");
         menuItemNew.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -112,6 +113,7 @@ public class NewJFrame extends javax.swing.JFrame {
         });
         New.add(menuItemNew);
 
+        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Actions-document-open-icon.png"))); // NOI18N
         jMenuItem1.setText("Open File ...");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -120,6 +122,7 @@ public class NewJFrame extends javax.swing.JFrame {
         });
         New.add(jMenuItem1);
 
+        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Actions-document-save-icon.png"))); // NOI18N
         jMenuItem2.setText("Save ...");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
