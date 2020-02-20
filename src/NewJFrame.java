@@ -16,17 +16,55 @@ import javax.swing.undo.*;
  * @author vmalonso
  */
 public class NewJFrame extends javax.swing.JFrame {
+    
+    
+    class MyDocumentListener implements DocumentListener {
+
+        @Override
+        public void insertUpdate(DocumentEvent de) {
+            modified = true;
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent de) {
+            modified = true;
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent de) {
+            modified = true;
+        }
+        
+    }
 
     UndoManager undoManager;
+    private boolean modified;
+    private DocumentListener myDocumentListener;
 
     /**
      * Creates new form NewJFrame
      */
     public NewJFrame() {
         initComponents();
-        initMyCode();
+        initMyCode();        
     }
 
+    
+    public void askIfSave() {
+        if (!modified) {
+            return;
+        }
+        modified = false;
+        int response = JOptionPane.showConfirmDialog(null, //
+                        "Do you want to save the current file?", //
+                        "Confirm", JOptionPane.YES_NO_OPTION, //
+                        JOptionPane.QUESTION_MESSAGE);
+        if (response != JOptionPane.YES_OPTION) {
+            return;
+        }
+        save();
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -37,7 +75,6 @@ public class NewJFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
-        jFileChooser1 = new javax.swing.JFileChooser();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jToolBar1 = new javax.swing.JToolBar();
@@ -207,10 +244,12 @@ public class NewJFrame extends javax.swing.JFrame {
 
         setJMenuBar(jMenuBar1);
 
-        pack();
+        setBounds(0, 0, 410, 330);
     }// </editor-fold>//GEN-END:initComponents
 
     private void initMyCode() {
+        modified = false;
+        setLocationRelativeTo(null);
         undoManager = new UndoManager();
         jTextArea1.getDocument().addUndoableEditListener(new UndoableEditListener() {
             @Override
@@ -219,10 +258,14 @@ public class NewJFrame extends javax.swing.JFrame {
                 undoManager.addEdit(e.getEdit());
             }
         });
+        myDocumentListener = new MyDocumentListener();
+        jTextArea1.getDocument().addDocumentListener(myDocumentListener);
     }
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         save();
+        
+        //jTextArea1.getDocument().removeDocumentListener(myDocumentListener);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -230,13 +273,14 @@ public class NewJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void menuItemNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemNewActionPerformed
+        askIfSave();
         int n = JOptionPane.showConfirmDialog(
                 this,
                 "Do you want to delete the current text?",
                 "Remove test?",
                 JOptionPane.YES_NO_OPTION);
-        if (n == 0) {
-            jTextArea1.setText("");
+        if (n == 0) {            
+            jTextArea1.setText("");            
         }
     }//GEN-LAST:event_menuItemNewActionPerformed
 
@@ -307,7 +351,7 @@ public class NewJFrame extends javax.swing.JFrame {
             }
 
             try {
-                saveFile(fileName);
+                saveFile(fileName);                
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(null, "Error writing file "
                         + fileName, "ERROR", JOptionPane.WARNING_MESSAGE);
@@ -323,19 +367,22 @@ public class NewJFrame extends javax.swing.JFrame {
         } finally {
             if (writer != null) {
                 writer.close();
+                modified = false;
             }
 
         }
     }
 
     private void load() {
+        if (modified) {
+            askIfSave();   
+        }
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.showOpenDialog(this);
         File file = fileChooser.getSelectedFile();
         String s = null;
         if (file != null) {
-            String fileName = file.getAbsolutePath();
-            System.out.println(file);
+            String fileName = file.getName();
             try {
                 s = loadFile(file);
             } catch (IOException ex) {
@@ -406,7 +453,6 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.Box.Filler filler3;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
